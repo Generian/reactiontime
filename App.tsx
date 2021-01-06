@@ -17,41 +17,35 @@ const theme = {
   },
 }
 
-const defaultTargetTime: false | number = false
+export type targetTime = false | number
+const defaultTargetTime: targetTime = false
+
+export type diff = false | number
+const defaultDiff: diff = false
 
 let timer: NodeJS.Timeout
 
 export default function App() {
 
-  const [lightsColor, setLightsColor] = useState('gray')
   const [targetTime, setTargetTime] = useState(defaultTargetTime)
-  const [message, setMessage] = useState("")
   const [countdown, setCountdown] = useState(false)
+  const [diff, setDiff] = useState(defaultDiff)
 
   const startProcess = () => {
-    setMessage("")
+    setDiff(false)
     setCountdown(true)
-    setLightsColor('red')
     const random = 1400 + Math.random() * 5000
 
     timer = setTimeout(() => {
       setTargetTime(Date.now())
-      setLightsColor('green')
     }, random)
   }
 
   const handleRelease = () => {
     clearTimeout(timer)
-    const diff = targetTime && Date.now() - targetTime
+    setDiff(targetTime ? Date.now() - targetTime : -1)
     setTargetTime(false)
     setCountdown(false)
-    setLightsColor('gray')
-
-    if (diff) {
-      setMessage(diff + ' ms')
-    } else {
-      setMessage("Too early!")
-    }
   }
 
   return (
@@ -62,7 +56,7 @@ export default function App() {
       <View style={styles.container}>
         <Lights countdown={countdown} green={targetTime ? true : false} />
         <View style={styles.textContainer}>
-          <Message message={message} />
+          <Message target={targetTime} diff={diff}/>
         </View>
         <View style={styles.clickableContainer}>
           <ClickableArea 

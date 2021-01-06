@@ -34,7 +34,7 @@ export default function Lights(props:any) {
             setLightsThree(false)
             setGreen(false)
         }
-    }, [props.countdown, props.green]);
+    }, [props.countdown, props.green])
 
     return (
         <View style={styles.lightsContainer}>
