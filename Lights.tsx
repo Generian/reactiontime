@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Surface, Text } from 'react-native-paper';
-import { Pressable, StyleSheet, View } from 'react-native';
+import React, { useState, useEffect } from 'react'
+import { Surface } from 'react-native-paper'
+import { StyleSheet, View } from 'react-native'
 
 let timerLightsTwo: NodeJS.Timeout
 let timerLightsThree: NodeJS.Timeout
 
 export default function Lights(props:any) {
+
     const [lightsOne, setLightsOne] = useState(false)
     const [lightsTwo, setLightsTwo] = useState(false)
     const [lightsThree, setLightsThree] = useState(false)
@@ -16,7 +17,6 @@ export default function Lights(props:any) {
             if (props.green) {
                 setGreen(true)
             } else {
-                console.log("starting")
                 setLightsOne(true)
                 timerLightsTwo = setTimeout(() => {
                     setLightsTwo(true)
@@ -26,7 +26,6 @@ export default function Lights(props:any) {
                 }, 1400)
             }
         } else {
-            console.log("stopping")
             clearTimeout(timerLightsTwo)
             clearTimeout(timerLightsThree)
             setLightsOne(false)
@@ -37,29 +36,29 @@ export default function Lights(props:any) {
     }, [props.countdown, props.green])
 
     return (
-        <View style={styles.lightsContainer}>
-            <Surface style={[styles.lights,{ backgroundColor: green ? 'green' : lightsOne ? 'red' : 'gray'}]}>
+        <View style={styles.container}>
+            <Surface style={[styles.lights,{ backgroundColor: green ? '#00701a' : lightsOne ? '#ab000d' : '#e0e0e0'}]}>
 
             </Surface>
-            <Surface style={[styles.lights,{ backgroundColor: green ? 'green' : lightsTwo ? 'red' : 'gray'}]}>
+            <Surface style={[styles.lights,{ backgroundColor: green ? '#00701a' : lightsTwo ? '#ab000d' : '#e0e0e0'}]}>
                 
             </Surface>
-            <Surface style={[styles.lights,{ backgroundColor: green ? 'green' : lightsThree ? 'red' : 'gray'}]}>
+            <Surface style={[styles.lights,{ backgroundColor: green ? '#00701a' : lightsThree ? '#ab000d' : '#e0e0e0'}]}>
                 
             </Surface>
         </View>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
     lights: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        margin: 15,
+        width: 70,
+        height: 70,
+        borderRadius: 35,
+        margin: 20,
     },
-    lightsContainer: {
-        flex: 3,
+    container: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',

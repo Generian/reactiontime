@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { Headline } from 'react-native-paper'
+import { Text, useTheme } from 'react-native-paper'
+import { StyleSheet } from 'react-native'
 import type { targetTime, diff } from './App'
 
 // Variables
@@ -24,6 +25,8 @@ let count = 0
 let calibrationCount = 0
 
 const Message = (props:MessageProps) => {
+
+  const { colors } = useTheme()
 
   const [message, setMessage] = useState(defaultMessage)
   const [calibrationMessage, setCalibrationMessage] = useState(defaultMessage)
@@ -69,8 +72,15 @@ const Message = (props:MessageProps) => {
   }, [props.diff, props.target])
   
   return (
-    <Headline>{message}</Headline>
+    <Text style={[styles.timerMessage,{ color: colors.text}]}>{message}</Text>
   )
 }
+
+const styles = StyleSheet.create({
+  timerMessage: {
+    fontSize: 50,
+    fontWeight: '500',
+  },
+});
 
 export default Message
