@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "reactionApp",
-    "slug": "reactionApp",
+    "name": "Reaction Time Tester",
+    "slug": "reaction-time-tester",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,7 +17,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.piequals3.reaction-time-tester",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
