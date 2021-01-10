@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import { Text, useTheme } from 'react-native-paper'
 import { StyleSheet } from 'react-native'
-import type { targetTime, diff } from './App'
+import type { targetTime, diff } from './Game'
 
 // Variables
 const timerInterval = 10 // Update timer every 10 ms
