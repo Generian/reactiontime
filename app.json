@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "reactionApp",
-    "slug": "reactionApp",
+    "name": "ReactionApp",
+    "slug": "ReactionApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#f5f5f5"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -17,12 +17,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.piequals3studios.reactionapp",
+      "buildNumber": "1.0.0",
+      "supportsTablet": false
     },
     "android": {
+      "package": "com.piequals3studios.reactionapp",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#f5f5f5"
       }
     },
     "web": {
