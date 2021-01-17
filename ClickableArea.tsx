@@ -17,7 +17,7 @@ const ClickableArea = (props:ClickableAreaProps) => {
       <Pressable style={styles.pressable}
         onPressIn={props.onPressIn}
         onPressOut={props.onPressOut}>
-          <View style={[styles.clickableArea,{ backgroundColor: props.isPressed ? colors.accent : '#fafafa'}]}>
+          <View style={[styles.clickableArea,{ backgroundColor: props.isPressed ? colors.accent : '#fafafa', borderColor: props.isPressed ? colors.primary : '#eeeeee'}]}>
             <Avatar.Icon icon="cursor-pointer"/>
             <Text style={[styles.text,{ color: colors.text}]}>Touch and hold until lights turn green</Text>
           </View>
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     height: '95%',
     display: 'flex',
     borderWidth: 2,
-    borderColor: '#eee',
     borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: "center",
