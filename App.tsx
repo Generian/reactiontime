@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
-import { Appbar, useTheme } from 'react-native-paper'
+import { Appbar } from 'react-native-paper'
 import ClickableArea from './ClickableArea'
 import Lights from './Lights'
 import Message from './Message'
@@ -79,7 +79,7 @@ export default function App() {
           <Message target={targetTime} diff={diff}/>
         </View>
         <View style={styles.lightsContainer}>
-          <Lights countdown={countdown} green={targetTime ? true : false} />
+          <Lights countdown={countdown} targetTime={targetTime} />
         </View>
         <View style={styles.clickableContainer}>
           <ClickableArea 

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { Text, useTheme } from 'react-native-paper'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Vibration } from 'react-native'
 import type { targetTime, diff } from './App'
 
 // Variables
@@ -52,6 +52,7 @@ const Message = (props:MessageProps) => {
         clearInterval(timer)
         count = 0
         setMessage("Jump start!")
+        Vibration.vibrate([10])
       } else {
         clearInterval(timer)
         count = 0

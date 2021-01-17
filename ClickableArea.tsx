@@ -1,22 +1,30 @@
-import * as React from 'react';
-import { Surface, Text, Avatar,useTheme } from 'react-native-paper';
-import { Pressable, StyleSheet, View } from 'react-native';
+import * as React from 'react'
+import { Surface, Text, Avatar,useTheme } from 'react-native-paper'
+import { Pressable, StyleSheet, View } from 'react-native'
 
-const ClickableArea = (props:any) => {
+interface ClickableAreaProps {
+  onPressIn: any,
+  onPressOut: any,
+  isPressed: boolean,
+}
+
+const ClickableArea = (props:ClickableAreaProps) => {
+
   const { colors } = useTheme()
 
   return (
-  <Surface style={styles.container}>
-    <Pressable style={styles.pressable}
-      onPressIn={props.onPressIn}
-      onPressOut={props.onPressOut}>
-        <View style={[styles.clickableArea,{ backgroundColor: props.isPressed ? colors.accent : '#fafafa'}]}>
-          <Avatar.Icon icon="cursor-pointer"/>
-          <Text style={[styles.text,{ color: colors.text}]}>Touch and hold until lights turn green</Text>
-        </View>
-    </Pressable>
-  </Surface>
-)}
+    <Surface style={styles.container}>
+      <Pressable style={styles.pressable}
+        onPressIn={props.onPressIn}
+        onPressOut={props.onPressOut}>
+          <View style={[styles.clickableArea,{ backgroundColor: props.isPressed ? colors.accent : '#fafafa'}]}>
+            <Avatar.Icon icon="cursor-pointer"/>
+            <Text style={[styles.text,{ color: colors.text}]}>Touch and hold until lights turn green</Text>
+          </View>
+      </Pressable>
+    </Surface>
+  )
+}
 
 const styles = StyleSheet.create({
   clickableArea: {
@@ -46,9 +54,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    marginTop: 10
+    marginTop: 10,
   }
-});
+})
 
-
-export default ClickableArea;
+export default ClickableArea
