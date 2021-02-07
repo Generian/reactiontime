@@ -8,20 +8,17 @@ import Lights from './Lights'
 import Message from './Message'
 
 export type targetTime = false | number
-const defaultTargetTime: targetTime = false
-
 export type diff = false | number
-const defaultDiff: diff = false
 
 let timer: NodeJS.Timeout
 
-export default function Game() {
+const Game = () => {
 
   const { colors } = useTheme()
 
-  const [targetTime, setTargetTime] = useState(defaultTargetTime)
+  const [targetTime, setTargetTime] = useState<targetTime>(false)
   const [countdown, setCountdown] = useState(false)
-  const [diff, setDiff] = useState(defaultDiff)
+  const [diff, setDiff] = useState<diff>(false)
 
   const startProcess = () => {
     setDiff(false)
@@ -83,3 +80,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 })
+
+export default Game

@@ -1,17 +1,47 @@
 import React from 'react'
+import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, View } from 'react-native'
 import { Appbar } from 'react-native-paper'
 import Game from './Game'
+import Leaderboard from './Leaderboard';
 
-export default function Main() {
+const Stack = createStackNavigator();
 
+const Header = () => {
   return (
-    <View style={styles.mainContainer}>
-      <Appbar>
+    <Appbar>
+    </Appbar>
+  );
+};
+
+const Main = () => {
+  return (
+    <Stack.Navigator 
+      initialRouteName="Game"
+      headerMode="screen"
+      screenOptions={{
+        header: ({ scene, previous, navigation }) => (
+          <Header scene={scene} previous={previous} navigation={navigation} />
+        ),
+      }}
+      >
+        <Stack.Screen
+          name="Game"
+          component={Game}
+          options={{ headerTitle: 'Game' }}
+        />
+        <Stack.Screen
+          name="Leaderboard"
+          component={Leaderboard}
+          options={{ headerTitle: 'Leaderboard' }}
+        />
+    </Stack.Navigator>
+    // <View style={styles.mainContainer}>
+    //   <Appbar>
         
-      </Appbar>
-      <Game />
-    </View>
+    //   </Appbar>
+    //   <Game />
+    // </View>
   )
 }
 
@@ -21,3 +51,5 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 })
+
+export default Main
