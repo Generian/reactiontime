@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Surface } from 'react-native-paper'
 import { StyleSheet, View } from 'react-native'
-import { targetTime } from './App'
+import { targetTime } from './Main'
 
 interface LightsProps {
   countdown: boolean,
