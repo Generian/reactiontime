@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { IconButton } from 'react-native-paper'
 import { useTheme } from 'react-native-paper'
 import { Appbar } from 'react-native-paper'
 import ClickableArea from './ClickableArea'
@@ -12,9 +13,14 @@ export type diff = false | number
 
 let timer: NodeJS.Timeout
 
-const Leaderboard = () => {
+const Leaderboard = ({ navigation }) => {
   return (
     <View style={styles.leaderboardContainer}>
+      <IconButton
+          icon="camera"
+          size={20}
+          onPress={() => navigation.pop()}
+        />
       <Text>Leaderboard</Text>
     </View>
   )

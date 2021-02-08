@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
+import { IconButton } from 'react-native-paper'
 import { useTheme } from 'react-native-paper'
 import { Appbar } from 'react-native-paper'
 import ClickableArea from './ClickableArea'
@@ -12,7 +13,7 @@ export type diff = false | number
 
 let timer: NodeJS.Timeout
 
-const Game = () => {
+const Game = ({ navigation }) => {
 
   const { colors } = useTheme()
 
@@ -40,6 +41,11 @@ const Game = () => {
   return (
     <View style={[styles.gameContainer,{ backgroundColor: targetTime ? colors.lightGreen : countdown ? colors.lightRed : colors.background}]}>
       <View style={styles.textContainer}>
+        <IconButton
+          icon="camera"
+          size={20}
+          onPress={() => navigation.push('Leaderboard')}
+        />
         <Message target={targetTime} diff={diff}/>
       </View>
       <View style={styles.lightsContainer}>

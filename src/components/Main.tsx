@@ -21,14 +21,14 @@ const Main = () => {
       headerMode="screen"
       screenOptions={{
         header: ({ scene, previous, navigation }) => (
-          <Header scene={scene} previous={previous} navigation={navigation} />
+          <Header />
         ),
       }}
       >
         <Stack.Screen
           name="Game"
           component={Game}
-          options={{ headerTitle: 'Game' }}
+          options={{ headerTitle: 'Game'}}
         />
         <Stack.Screen
           name="Leaderboard"
