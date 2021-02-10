@@ -1,19 +1,29 @@
-import React from 'react'
-import { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { IconButton } from 'react-native-paper'
-import { useTheme } from 'react-native-paper'
-import { Appbar } from 'react-native-paper'
-import ClickableArea from './ClickableArea'
-import Lights from './Lights'
-import Message from './Message'
+import React, { useContext } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { List, useTheme, Text, IconButton } from 'react-native-paper'
+import { HighscoresContext } from './Main';
 
-export type targetTime = false | number
-export type diff = false | number
+interface LeaderboardProps {
+  setScreen: any,
+  highscores: any[],
+}
 
-let timer: NodeJS.Timeout
+interface HighscoreItemProps {
+  position: number,
+  time: string,
+}
+
+const HighscoreItem = (props: HighscoreItemProps) => (
+  <View nativeID={String(props.position)}>
+    <Text>{props.position}</Text>
+    <Text>{props.time}</Text>
+  </View>
+);
 
 const Leaderboard = ({ navigation }) => {
+
+  const highscores = useContext(HighscoresContext)
+
   return (
     <View style={styles.leaderboardContainer}>
       <IconButton
@@ -22,6 +32,9 @@ const Leaderboard = ({ navigation }) => {
           onPress={() => navigation.pop()}
         />
       <Text>Leaderboard</Text>
+      {highscores.highscores.map((time, index) => (
+        <HighscoreItem key={index} position={index + 1} time={time}/>
+      ))}
     </View>
   )
 }

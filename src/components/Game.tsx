@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { IconButton } from 'react-native-paper'
@@ -6,6 +6,7 @@ import { useTheme } from 'react-native-paper'
 import { Appbar } from 'react-native-paper'
 import ClickableArea from './ClickableArea'
 import Lights from './Lights'
+import { HighscoresContext } from './Main'
 import Message from './Message'
 
 export type targetTime = false | number
@@ -16,6 +17,7 @@ let timer: NodeJS.Timeout
 const Game = ({ navigation }) => {
 
   const { colors } = useTheme()
+  const handle = useContext(HighscoresContext)
 
   const [targetTime, setTargetTime] = useState<targetTime>(false)
   const [countdown, setCountdown] = useState(false)
@@ -36,6 +38,9 @@ const Game = ({ navigation }) => {
     setDiff(targetTime ? Date.now() - targetTime : -1)
     setTargetTime(false)
     setCountdown(false)
+    if (diff != -1) {
+      handle.handle(diff)
+    }
   }
 
   return (
