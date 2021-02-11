@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { IconButton } from 'react-native-paper'
@@ -6,15 +6,25 @@ import { useTheme } from 'react-native-paper'
 import { Appbar } from 'react-native-paper'
 import ClickableArea from './ClickableArea'
 import Lights from './Lights'
-import { HighscoresContext } from './Main'
+import { HighscoresContext, StackParamList } from './Main'
 import Message from './Message'
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type GameScreenNavigationProp = StackNavigationProp<
+  StackParamList,
+  'Game'
+>;
+
+type GameProps = {
+  navigation: GameScreenNavigationProp;
+};
 
 export type targetTime = false | number
 export type diff = false | number
 
 let timer: NodeJS.Timeout
 
-const Game = ({ navigation }) => {
+const Game = ({ navigation }:GameProps) => {
 
   const { colors } = useTheme()
   const handle = useContext(HighscoresContext)
@@ -22,6 +32,12 @@ const Game = ({ navigation }) => {
   const [targetTime, setTargetTime] = useState<targetTime>(false)
   const [countdown, setCountdown] = useState(false)
   const [diff, setDiff] = useState<diff>(false)
+
+  useEffect(() => {
+    if (diff && diff != -1) {
+      handle.handle(diff)
+    }
+  }, [diff])
 
   const startProcess = () => {
     setDiff(false)
@@ -38,9 +54,6 @@ const Game = ({ navigation }) => {
     setDiff(targetTime ? Date.now() - targetTime : -1)
     setTargetTime(false)
     setCountdown(false)
-    if (diff != -1) {
-      handle.handle(diff)
-    }
   }
 
   return (

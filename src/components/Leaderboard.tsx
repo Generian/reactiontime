@@ -1,26 +1,31 @@
 import React, { useContext } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { List, useTheme, Text, IconButton } from 'react-native-paper'
-import { HighscoresContext } from './Main';
+import { Text, IconButton } from 'react-native-paper'
+import { HighscoresContext, StackParamList } from './Main'
+import { StackNavigationProp } from '@react-navigation/stack';
 
-interface LeaderboardProps {
-  setScreen: any,
-  highscores: any[],
+type LeaderboardScreenNavigationProp = StackNavigationProp<
+  StackParamList,
+  'Leaderboard'
+>
+
+type LeaderboardProps = {
+  navigation: LeaderboardScreenNavigationProp;
 }
 
 interface HighscoreItemProps {
   position: number,
-  time: string,
+  time: number,
 }
 
-const HighscoreItem = (props: HighscoreItemProps) => (
+const HighscoreItem = (props:HighscoreItemProps) => (
   <View nativeID={String(props.position)}>
     <Text>{props.position}</Text>
     <Text>{props.time}</Text>
   </View>
 );
 
-const Leaderboard = ({ navigation }) => {
+const Leaderboard = ({ navigation }:LeaderboardProps) => {
 
   const highscores = useContext(HighscoresContext)
 
@@ -32,7 +37,7 @@ const Leaderboard = ({ navigation }) => {
           onPress={() => navigation.pop()}
         />
       <Text>Leaderboard</Text>
-      {highscores.highscores.map((time, index) => (
+      {highscores.highscores.map(([time, str], index) => (
         <HighscoreItem key={index} position={index + 1} time={time}/>
       ))}
     </View>

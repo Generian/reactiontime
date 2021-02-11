@@ -1,33 +1,53 @@
 import React, { useState } from 'react'
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack'
 import { StyleSheet, View } from 'react-native'
 import { Appbar } from 'react-native-paper'
 import Game from './Game'
-import Leaderboard from './Leaderboard';
+import Leaderboard from './Leaderboard'
 
-const Stack = createStackNavigator();
+export type StackParamList = {
+  Game: undefined;
+  Leaderboard: undefined;
+}
+
+type HighscoreItem = [number, string]
+
+type HighscoreContextProp = {
+  highscores: HighscoreItem[];
+  handle: any;
+}
+
+const defaultHighscoresContextProp:HighscoreContextProp = {
+  highscores: [],
+  handle: () => {}
+}
+
+const Stack = createStackNavigator<StackParamList>();
 
 const Header = () => {
   return (
     <Appbar>
+
     </Appbar>
   );
 };
 
-export const HighscoresContext = React.createContext({highscores: [0, 0], handle: (x: any) => {return x}});
+export const HighscoresContext = React.createContext<HighscoreContextProp>(defaultHighscoresContextProp)
 
 const Main = () => {
 
-  const [highscores, setHighscores] = useState([201, 300])
+  const [highscores, setHighscores] = useState<HighscoreItem[]>([])
 
   const handleNewScore = (newScore: number) => {
     let scores = highscores
-    for (let i = 0; i < scores.length; i++) {
-      if (scores.length < 10) {
-        scores.push(newScore)
-      } else if (newScore < scores[i]) {
-        scores.splice(i, i = 9 ? 1 : 0, newScore)
+    for (let i = 0; i < 10; i++) {
+      if (!scores[i] || newScore < scores[i][0]) {
+        scores.splice(i, i == 9 ? 1 : 0, [newScore, ""])
+        break;
       }
+    }
+    if (scores.length > 10) {
+      scores = scores.slice(0, 10)
     }
     setHighscores(scores)
   }
