@@ -10,7 +10,7 @@ export type StackParamList = {
   Leaderboard: undefined;
 }
 
-type HighscoreItem = [number, string]
+type HighscoreItem = [number, number]
 
 type HighscoreContextProp = {
   highscores: HighscoreItem[];
@@ -38,11 +38,11 @@ const Main = () => {
 
   const [highscores, setHighscores] = useState<HighscoreItem[]>([])
 
-  const handleNewScore = (newScore: number) => {
+  const handleNewScore = (newScore: number, date: number) => {
     let scores = highscores
     for (let i = 0; i < 10; i++) {
       if (!scores[i] || newScore < scores[i][0]) {
-        scores.splice(i, i == 9 ? 1 : 0, [newScore, ""])
+        scores.splice(i, i == 9 ? 1 : 0, [newScore, date])
         break;
       }
     }

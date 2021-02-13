@@ -3,12 +3,13 @@ import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { IconButton } from 'react-native-paper'
 import { useTheme } from 'react-native-paper'
-import { Appbar } from 'react-native-paper'
 import ClickableArea from './ClickableArea'
 import Lights from './Lights'
 import { HighscoresContext, StackParamList } from './Main'
 import Message from './Message'
-import { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from '@react-navigation/stack'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faTrophy } from '@fortawesome/free-solid-svg-icons'
 
 type GameScreenNavigationProp = StackNavigationProp<
   StackParamList,
@@ -35,7 +36,7 @@ const Game = ({ navigation }:GameProps) => {
 
   useEffect(() => {
     if (diff && diff != -1) {
-      handle.handle(diff)
+      handle.handle(diff, Date.now())
     }
   }, [diff])
 
@@ -58,12 +59,15 @@ const Game = ({ navigation }:GameProps) => {
 
   return (
     <View style={[styles.gameContainer,{ backgroundColor: targetTime ? colors.lightGreen : countdown ? colors.lightRed : colors.background}]}>
-      <View style={styles.textContainer}>
+      <View style={styles.navContainer}>
         <IconButton
-          icon="camera"
-          size={20}
+          icon={() => (<FontAwesomeIcon icon={faTrophy} color={colors.primary} size={30}/>)}
+          size={45}
+          style={styles.navIcon}
           onPress={() => navigation.push('Leaderboard')}
         />
+      </View>
+      <View style={styles.textContainer}>
         <Message target={targetTime} diff={diff}/>
       </View>
       <View style={styles.lightsContainer}>
@@ -91,10 +95,18 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: '10%',
   },
+  navContainer: {
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  navIcon: {
+    margin: '5%'
+  },
   textContainer: {
     flex: 2,
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     width: '100%',
   },
   clickableContainer: {
