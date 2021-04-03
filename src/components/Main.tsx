@@ -1,64 +1,28 @@
-import React, { useState } from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
-import { StyleSheet, View } from 'react-native'
+import React from 'react'
 import { Appbar } from 'react-native-paper'
 import Game from './Game'
 import Leaderboard from './Leaderboard'
+import { HighscoresContext, Stack } from '../helpers/Navigation'
 
-export type StackParamList = {
-  Game: undefined;
-  Leaderboard: undefined;
-}
-
-type HighscoreItem = [number, number]
-
-type HighscoreContextProp = {
-  highscores: HighscoreItem[];
-  handle: any;
-}
-
-const defaultHighscoresContextProp:HighscoreContextProp = {
-  highscores: [],
-  handle: () => {}
-}
-
-const Stack = createStackNavigator<StackParamList>();
+export type HighscoreItem = [number, number]
 
 const Header = () => {
   return (
     <Appbar>
 
     </Appbar>
-  );
-};
-
-export const HighscoresContext = React.createContext<HighscoreContextProp>(defaultHighscoresContextProp)
+  )
+}
 
 const Main = () => {
-
-  const [highscores, setHighscores] = useState<HighscoreItem[]>([])
-
-  const handleNewScore = (newScore: number, date: number) => {
-    let scores = highscores
-    for (let i = 0; i < 10; i++) {
-      if (!scores[i] || newScore < scores[i][0]) {
-        scores.splice(i, i == 9 ? 1 : 0, [newScore, date])
-        break;
-      }
-    }
-    if (scores.length > 10) {
-      scores = scores.slice(0, 10)
-    }
-    setHighscores(scores)
-  }
   
   return (
-    <HighscoresContext.Provider value={{highscores: highscores, handle: handleNewScore}}>
+    <HighscoresContext.Provider value={{handle: () => {}}}>
       <Stack.Navigator 
         initialRouteName="Game"
         headerMode="screen"
         screenOptions={{
-          header: ({ scene, previous, navigation }) => (
+          header: () => (
             <Header />
           ),
         }}
@@ -77,12 +41,5 @@ const Main = () => {
     </HighscoresContext.Provider>
   )
 }
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    width: '100%',
-    height: '100%',
-  },
-})
 
 export default Main

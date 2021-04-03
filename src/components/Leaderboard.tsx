@@ -1,78 +1,75 @@
-import React, { useContext } from 'react'
-import { StyleSheet, View } from 'react-native'
-import { Text, IconButton, useTheme, Title, Headline } from 'react-native-paper'
-import { HighscoresContext, StackParamList } from './Main'
-import { StackNavigationProp } from '@react-navigation/stack'
+import React, { useEffect, useState } from 'react'
+import { FlatList, StyleSheet, View } from 'react-native'
+import { Text, IconButton, useTheme, Title, Headline, Caption, Subheading } from 'react-native-paper'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
-import { Colors } from 'react-native/Libraries/NewAppScreen'
-
-type LeaderboardScreenNavigationProp = StackNavigationProp<
-  StackParamList,
-  'Leaderboard'
->
-
-type LeaderboardProps = {
-  navigation: LeaderboardScreenNavigationProp;
-}
+import { getHighscores, Highscore } from '../helpers/fetch'
+import { timeDifference } from '../helpers/utils'
+import { LeaderboardProps } from '../helpers/Navigation'
 
 interface HighscoreItemProps {
-  position: number,
-  time: number,
-  date: number,
+  item: {
+    name: string,
+    time: number,
+    date: number,
+  }
+  index: number,
 }
 
-const timeDifference = (previous: any, current: any = Date.now()) => {
+const HighscoreItem = ({ item, index }: HighscoreItemProps) => {
+  return (
+    <View nativeID={String(index)} style={styles.highscoreItemContainer}>
+      <View style={styles.rankContainer}>
+        <Subheading style={{color: '#00897b'}}>{index + 1}</Subheading>
+      </View>
+      <View style={styles.scoreContainer}>
+        <Title>{`${item.time} ms`}</Title>
+        <Text style={styles.time}>{`by ${item.name} ${timeDifference(item.date)}`}</Text>
+      </View>
+      <View style={styles.rankContainer}>
 
-  var msPerMinute = 60 * 1000;
-  var msPerHour = msPerMinute * 60;
-  var msPerDay = msPerHour * 24;
-  var msPerMonth = msPerDay * 30;
-  var msPerYear = msPerDay * 365;
-
-  var elapsed = current - previous
-
-  if (elapsed < msPerMinute) {
-      return 'just now';   
-  }
-
-  else if (elapsed < msPerHour) {
-      const num = Math.round(elapsed/msPerMinute) 
-      return num + ` minute${num == 1 ? '' : 's'} ago`;   
-  }
-
-  else if (elapsed < msPerDay ) {
-      const num = Math.round(elapsed/msPerHour)
-      return num + ` hour${num == 1 ? '' : 's'} ago`;   
-  }
-
-  else if (elapsed < msPerMonth) {
-      const num = Math.round(elapsed/msPerDay)
-      return num + ` day${num == 1 ? '' : 's'} ago`;   
-  }
-
-  else if (elapsed < msPerYear) {
-      const num = Math.round(elapsed/msPerMonth)
-      return num + ` month${num == 1 ? '' : 's'} ago`;   
-  }
-
-  else {
-      const num = Math.round(elapsed/msPerYear)
-      return num + ` year${num == 1 ? '' : 's'} ago`;   
-  }
+      </View>
+    </View>
+  )
 }
 
-const HighscoreItem = (props:HighscoreItemProps) => (
-  <View nativeID={String(props.position)} style={styles.highscoreItemContainer}>
-    <Title>{`${props.time} ms`}</Title>
-    <Text style={styles.time}>{timeDifference(props.date)}</Text>
-  </View>
-);
+const EmptyState = () => {
+  return (
+    <View style={styles.titleContainer}>
+      <Caption>Could not find leaderboard</Caption>
+    </View>
+  )
+}
 
-const Leaderboard = ({ navigation }:LeaderboardProps) => {
-  
+const Leaderboard = ({ navigation }: LeaderboardProps) => {
+
+  const [highscores, setHighscores] = useState<Highscore[]>([])
+  const [refreshing, setRefreshing] = useState<boolean>(true)
+
   const { colors } = useTheme()
-  const highscores = useContext(HighscoresContext)
+  // const highscores = useContext(HighscoresContext)
+
+  useEffect(() => {
+    getHighscores()
+      .then(h => {
+        const compare = ( a: Highscore, b: Highscore ) => {
+          if ( a.time < b.time ) {
+            return -1
+          } else if ( a.time > b.time ) {
+            return 1
+          } else if (a.date < b.date) {
+            return -1
+          } else if (a.date > b.date) {
+            return 1
+          }
+          return 0
+        }
+        
+        h.sort( compare )
+        setHighscores(h)
+        setRefreshing(false)
+      })
+  }, [])
 
   return (
     <View style={styles.leaderboardContainer}>
@@ -88,9 +85,13 @@ const Leaderboard = ({ navigation }:LeaderboardProps) => {
         <Headline>Highscores</Headline>
       </View>
       <View style={styles.highscoresContainer}>
-        {highscores.highscores.map(([time, date], index) => (
-          <HighscoreItem key={index} position={index + 1} time={time} date={date}/>
-        ))}
+        <FlatList
+          data={highscores}
+          renderItem={HighscoreItem}
+          refreshing={refreshing}
+          ListEmptyComponent={EmptyState}
+          style={styles.list}
+        />
       </View>
     </View>
   )
@@ -122,10 +123,26 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: '5%',
   },
+  list: {
+    flex: 1,
+    width: '100%',
+  },
   highscoreItemContainer: {
+    width: '100%',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: '2%',
+    marginTop: '2%',
+    marginBottom: '2%',
+  },
+  rankContainer: {
+    width: '15%',
+    alignItems: 'center',
+  },
+  scoreContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   navIcon: {
     margin: '5%'

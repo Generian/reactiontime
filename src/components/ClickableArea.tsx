@@ -10,7 +10,7 @@ interface ClickableAreaProps {
   isPressed: boolean,
 }
 
-const ClickableArea = (props:ClickableAreaProps) => {
+const ClickableArea = (props: ClickableAreaProps) => {
 
   const { colors } = useTheme()
 

@@ -1,42 +1,37 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { IconButton } from 'react-native-paper'
 import { useTheme } from 'react-native-paper'
 import ClickableArea from './ClickableArea'
 import Lights from './Lights'
-import { HighscoresContext, StackParamList } from './Main'
 import Message from './Message'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faTrophy } from '@fortawesome/free-solid-svg-icons'
-
-type GameScreenNavigationProp = StackNavigationProp<
-  StackParamList,
-  'Game'
->;
-
-type GameProps = {
-  navigation: GameScreenNavigationProp;
-};
+import { doesQualify } from '../helpers/fetch'
+import SubmitForm from './SubmitForm'
+import { GameProps } from '../helpers/Navigation'
 
 export type targetTime = false | number
 export type diff = false | number
 
 let timer: NodeJS.Timeout
 
-const Game = ({ navigation }:GameProps) => {
+const Game = ({ navigation }: GameProps) => {
 
   const { colors } = useTheme()
-  const handle = useContext(HighscoresContext)
 
   const [targetTime, setTargetTime] = useState<targetTime>(false)
   const [countdown, setCountdown] = useState(false)
   const [diff, setDiff] = useState<diff>(false)
 
+  const [openSubmitForm, setOpenSubmitForm] = useState<boolean>(false)
+  const [rank, setRank] = useState<number>(0)
+
+
   useEffect(() => {
     if (diff && diff != -1) {
-      handle.handle(diff, Date.now())
+      handleNewScore(diff)
     }
   }, [diff])
 
@@ -55,6 +50,13 @@ const Game = ({ navigation }:GameProps) => {
     setDiff(targetTime ? Date.now() - targetTime : -1)
     setTargetTime(false)
     setCountdown(false)
+  }
+
+  const handleNewScore = (newScore: number) => {
+    doesQualify(newScore).then(res => {
+      setOpenSubmitForm(res.qualifies && newScore !== -1)
+      setRank(res.rank)
+    })
   }
 
   return (
@@ -80,6 +82,7 @@ const Game = ({ navigation }:GameProps) => {
           isPressed={countdown}
         />
       </View>
+      {SubmitForm(openSubmitForm, setOpenSubmitForm, rank, diff)}
     </View>
   )
 }
