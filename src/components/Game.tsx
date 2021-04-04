@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     marginBottom: '10%',
   },
   navContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'flex-end',
     justifyContent: 'center',
     width: '100%',
   },

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
-import { Text, IconButton, useTheme, Title, Headline, Caption, Subheading } from 'react-native-paper'
+import { Text, IconButton, useTheme, Title, Headline, Caption, Subheading, ActivityIndicator } from 'react-native-paper'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { getHighscores, Highscore } from '../helpers/fetch'
-import { timeDifference } from '../helpers/utils'
+import { sortHighscores, timeDifference } from '../helpers/utils'
 import { LeaderboardProps } from '../helpers/Navigation'
 
 interface HighscoreItemProps {
@@ -33,10 +33,11 @@ const HighscoreItem = ({ item, index }: HighscoreItemProps) => {
   )
 }
 
-const EmptyState = () => {
+const EmptyState = (refreshing: boolean) => {
   return (
     <View style={styles.titleContainer}>
-      <Caption>Could not find leaderboard</Caption>
+      {refreshing && <ActivityIndicator animating={true} />}
+      {!refreshing && <Caption>Could not find leaderboard</Caption>}
     </View>
   )
 }
@@ -47,26 +48,11 @@ const Leaderboard = ({ navigation }: LeaderboardProps) => {
   const [refreshing, setRefreshing] = useState<boolean>(true)
 
   const { colors } = useTheme()
-  // const highscores = useContext(HighscoresContext)
 
   useEffect(() => {
     getHighscores()
       .then(h => {
-        const compare = ( a: Highscore, b: Highscore ) => {
-          if ( a.time < b.time ) {
-            return -1
-          } else if ( a.time > b.time ) {
-            return 1
-          } else if (a.date < b.date) {
-            return -1
-          } else if (a.date > b.date) {
-            return 1
-          }
-          return 0
-        }
-        
-        h.sort( compare )
-        setHighscores(h)
+        setHighscores(sortHighscores(h))
         setRefreshing(false)
       })
   }, [])
@@ -89,7 +75,7 @@ const Leaderboard = ({ navigation }: LeaderboardProps) => {
           data={highscores}
           renderItem={HighscoreItem}
           refreshing={refreshing}
-          ListEmptyComponent={EmptyState}
+          ListEmptyComponent={EmptyState(refreshing)}
           style={styles.list}
         />
       </View>

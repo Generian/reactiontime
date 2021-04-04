@@ -1,3 +1,5 @@
+import { Highscore } from "./fetch";
+
 export const timeDifference = (previous: any, current: any = Date.now()) => {
 
   var msPerMinute = 60 * 1000;
@@ -36,4 +38,21 @@ export const timeDifference = (previous: any, current: any = Date.now()) => {
       const num = Math.round(elapsed/msPerYear)
       return num + ` year${num == 1 ? '' : 's'} ago`;   
   }
+}
+
+export const sortHighscores = (highscores: Highscore[]) => {
+  const compare = ( a: Highscore, b: Highscore ) => {
+    if ( a.time < b.time ) {
+      return -1
+    } else if ( a.time > b.time ) {
+      return 1
+    } else if (a.date < b.date) {
+      return -1
+    } else if (a.date > b.date) {
+      return 1
+    }
+    return 0
+  }
+  
+  return highscores.sort( compare )
 }
