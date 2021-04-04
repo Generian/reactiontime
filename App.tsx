@@ -1,5 +1,6 @@
 import React from 'react'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
+import { NavigationContainer } from '@react-navigation/native'
 import Main from './src/components/Main'
 
 declare global {
@@ -34,7 +35,9 @@ const theme = {
 export default function App() {
   return (
     <PaperProvider theme={theme}>
-      <Main />
+      <NavigationContainer>
+        <Main />
+      </NavigationContainer>
     </PaperProvider>
   )
 }
