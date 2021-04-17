@@ -9,8 +9,10 @@ import Message from './Message'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faTrophy } from '@fortawesome/free-solid-svg-icons'
 import { doesQualify } from '../helpers/fetch'
-import SubmitForm from './SubmitForm'
 import { GameProps } from '../helpers/Navigation'
+import SubmitForm from './SubmitForm'
+import { DISABLE_TIMEOUT } from '../../config'
+
 
 export type targetTime = false | number
 export type diff = false | number
@@ -24,6 +26,7 @@ const Game = ({ navigation }: GameProps) => {
   const [targetTime, setTargetTime] = useState<targetTime>(false)
   const [countdown, setCountdown] = useState(false)
   const [diff, setDiff] = useState<diff>(false)
+  const [disabled, setDisabled] = useState<boolean>(false)
 
   const [openSubmitForm, setOpenSubmitForm] = useState<boolean>(false)
   const [rank, setRank] = useState<number>(0)
@@ -36,6 +39,7 @@ const Game = ({ navigation }: GameProps) => {
   }, [diff])
 
   const startProcess = () => {
+    console.log("Start", targetTime, countdown, diff)
     setDiff(false)
     setCountdown(true)
     const random = 1400 + Math.random() * 5000
@@ -46,6 +50,16 @@ const Game = ({ navigation }: GameProps) => {
   }
 
   const handleRelease = () => {
+    console.log("Release", targetTime, countdown, diff)
+
+    // Disable game if jump start
+    if (!targetTime) {
+      setDisabled(true)
+      setTimeout(() => {
+        setDisabled(false)
+      }, DISABLE_TIMEOUT)
+    }
+    
     clearTimeout(timer)
     setDiff(targetTime ? Date.now() - targetTime : -1)
     setTargetTime(false)
@@ -60,7 +74,7 @@ const Game = ({ navigation }: GameProps) => {
   }
 
   return (
-    <View style={[styles.gameContainer,{ backgroundColor: targetTime ? colors.lightGreen : countdown ? colors.lightRed : colors.background}]}>
+    <View style={[styles.gameContainer,{ backgroundColor: targetTime ? colors.lightGreen : colors.background}]}>
       <View style={styles.navContainer}>
         <IconButton
           icon={() => (<FontAwesomeIcon icon={faTrophy} color={colors.primary} size={30}/>)}
@@ -80,6 +94,7 @@ const Game = ({ navigation }: GameProps) => {
           onPressIn={startProcess}
           onPressOut={handleRelease}
           isPressed={countdown}
+          disabled={disabled}
         />
       </View>
       {SubmitForm(openSubmitForm, setOpenSubmitForm, rank, diff)}

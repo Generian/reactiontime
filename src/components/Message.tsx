@@ -24,7 +24,7 @@ let calibrator: any
 let count = 0
 let calibrationCount = 0
 
-const Message = (props:MessageProps) => {
+const Message = (props: MessageProps) => {
 
   const { colors } = useTheme()
 
