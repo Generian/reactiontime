@@ -47,7 +47,7 @@ const Leaderboard = ({ navigation }: LeaderboardProps) => {
 
   const [highscores, setHighscores] = useState<Highscore[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(true)
-  const [highscoreType, setHighscoreType] = useState<HighscoreType>('NORMAL')
+  const [highscoreType, setHighscoreType] = useState<HighscoreType>('THREE_AVG')
 
   const { colors } = useTheme()
 
@@ -78,6 +78,7 @@ const Leaderboard = ({ navigation }: LeaderboardProps) => {
       </View>
       <View style={styles.titleContainer}>
         <Headline>Highscores</Headline>
+        <Caption>{highscoreType === "NORMAL" ? "Single score" : "Three times average"}</Caption>
       </View>
       <View style={styles.highscoresContainer}>
         <FlatList

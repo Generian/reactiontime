@@ -113,7 +113,7 @@ const Game = ({ navigation }: GameProps) => {
           style={styles.navIcon}
           onPress={() => navigation.push('Leaderboard')}
         />
-        {calculateAverage(threeAvg) > 0 && <View style={styles.averageContainer}>
+        <View style={styles.averageContainer}>
           <IconButton
             icon="numeric-3-circle-outline"
             color={colors.primary}
@@ -121,8 +121,9 @@ const Game = ({ navigation }: GameProps) => {
             onPress={() => {}}
             disabled={true}
           />
-          <Caption style={styles.averageText}>{calculateAverage(threeAvg)} ms</Caption>
-        </View>}
+          {threeAvg.length === 3 && <Caption style={styles.averageText}>{calculateAverage(threeAvg)} ms</Caption>}
+          {threeAvg.length < 3 && <Caption style={styles.averageText}>{threeAvg.length === 0 ? "1st try" : threeAvg.length === 1 ? "2nd try" : "3rd try"}</Caption>}
+        </View>
       </View>
       <View style={styles.textContainer}>
         <Message target={targetTime} diff={diff}/>
