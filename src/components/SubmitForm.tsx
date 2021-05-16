@@ -4,9 +4,10 @@ import { StyleSheet, View } from 'react-native'
 import { diff } from './Game'
 import { submitHighscore } from '../helpers/fetch'
 import { getNameFromStorage, storeNameInStorage } from '../helpers/LocalStorage'
+import { HighscoreType } from './HighscoreTypeSwitcher'
 
 
-const SubmitForm = (openSubmitForm: boolean, setOpenSubmitForm: (b: boolean) => void, rank: number, newScore: diff) => {
+const SubmitForm = (openSubmitForm: boolean, setOpenSubmitForm: (b: boolean) => void, rank: number, newScore: diff, highscoreType: HighscoreType) => {
 
   const [name, setName] = useState<string>('')
 
@@ -23,7 +24,7 @@ const SubmitForm = (openSubmitForm: boolean, setOpenSubmitForm: (b: boolean) => 
   const handleSubmit = () => {
     if (newScore && name) {
       storeNameInStorage(name)
-      submitHighscore(newScore, name)
+      submitHighscore(newScore, name, highscoreType)
     } else {
       console.error('Missing data to submit score')
     }

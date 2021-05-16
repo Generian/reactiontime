@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { IconButton } from 'react-native-paper'
-import { useTheme } from 'react-native-paper'
+import { useTheme, Caption } from 'react-native-paper'
 import ClickableArea from './ClickableArea'
 import Lights from './Lights'
 import Message from './Message'
@@ -11,11 +11,15 @@ import { faTrophy } from '@fortawesome/free-solid-svg-icons'
 import { doesQualify } from '../helpers/fetch'
 import SubmitForm from './SubmitForm'
 import { GameProps } from '../helpers/Navigation'
+import { HighscoreType } from './HighscoreTypeSwitcher'
 
 export type targetTime = false | number
 export type diff = false | number
+export type threeAvg = number[]
 
 let timer: NodeJS.Timeout
+
+const HighscoreTypes: HighscoreType[] = ["NORMAL", "THREE_AVG"]
 
 const Game = ({ navigation }: GameProps) => {
 
@@ -24,9 +28,14 @@ const Game = ({ navigation }: GameProps) => {
   const [targetTime, setTargetTime] = useState<targetTime>(false)
   const [countdown, setCountdown] = useState(false)
   const [diff, setDiff] = useState<diff>(false)
+  const [threeAvg, setThreeAvg] = useState<threeAvg>([])
+
 
   const [openSubmitForm, setOpenSubmitForm] = useState<boolean>(false)
+  const [openAvgSubmitForm, setOpenAvgSubmitForm] = useState<boolean>(false)
+
   const [rank, setRank] = useState<number>(0)
+  const [avgRank, setAvgRank] = useState<number>(0)
 
 
   useEffect(() => {
@@ -34,6 +43,12 @@ const Game = ({ navigation }: GameProps) => {
       handleNewScore(diff)
     }
   }, [diff])
+
+  useEffect(() => {
+    if (threeAvg.length === 3) {
+      handleNewAvgScore(threeAvg)
+    }
+  }, [JSON.stringify(threeAvg)])
 
   const startProcess = () => {
     setDiff(false)
@@ -45,17 +60,47 @@ const Game = ({ navigation }: GameProps) => {
     }, countdownTarget)
   }
 
-  const handleRelease = () => {
+  const handleRelease = async () => {
     clearTimeout(timer)
-    setDiff(targetTime ? Date.now() - targetTime : -1)
+    const newDiff = targetTime ? Date.now() - targetTime : -1
+    setDiff(newDiff)
     setTargetTime(false)
     setCountdown(false)
+
+    let newThreeAvg = threeAvg
+    if (newDiff === -1) {
+      newThreeAvg = []
+    } else {
+      if (threeAvg.length < 3) {
+        newThreeAvg.push(newDiff)
+      } else {
+        newThreeAvg.shift()
+        newThreeAvg.push(newDiff)
+      }
+    }
+    setThreeAvg(newThreeAvg)
+  }
+
+  const calculateAverage = (threeAvg: threeAvg) => {
+    if (threeAvg.length < 2) {
+      return 0
+    } else {
+      return Math.ceil(threeAvg.reduce((accumulator, currentValue) => accumulator + currentValue) / threeAvg.length)
+    }
   }
 
   const handleNewScore = (newScore: number) => {
-    doesQualify(newScore).then(res => {
+    doesQualify(newScore, "NORMAL").then(res => {
       setOpenSubmitForm(res.qualifies && newScore !== -1)
       setRank(res.rank)
+    })
+  }
+
+  const handleNewAvgScore = (threeAvg: threeAvg) => {
+    const avg = calculateAverage(threeAvg)
+    avg > 0 && doesQualify(avg, "THREE_AVG").then(res => {
+      setOpenAvgSubmitForm(res.qualifies && avg !== -1)
+      setAvgRank(res.rank)
     })
   }
 
@@ -68,6 +113,16 @@ const Game = ({ navigation }: GameProps) => {
           style={styles.navIcon}
           onPress={() => navigation.push('Leaderboard')}
         />
+        {calculateAverage(threeAvg) > 0 && <View style={styles.averageContainer}>
+          <IconButton
+            icon="numeric-3-circle-outline"
+            color={colors.primary}
+            size={30}
+            onPress={() => {}}
+            disabled={true}
+          />
+          <Caption style={styles.averageText}>{calculateAverage(threeAvg)} ms</Caption>
+        </View>}
       </View>
       <View style={styles.textContainer}>
         <Message target={targetTime} diff={diff}/>
@@ -82,7 +137,8 @@ const Game = ({ navigation }: GameProps) => {
           isPressed={countdown}
         />
       </View>
-      {SubmitForm(openSubmitForm, setOpenSubmitForm, rank, diff)}
+      {SubmitForm(openSubmitForm, setOpenSubmitForm, rank, diff, "NORMAL")}
+      {SubmitForm(openAvgSubmitForm, setOpenAvgSubmitForm, avgRank, calculateAverage(threeAvg), "THREE_AVG")}
     </View>
   )
 }
@@ -99,9 +155,18 @@ const styles = StyleSheet.create({
     marginBottom: '10%',
   },
   navContainer: {
-    alignItems: 'flex-end',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '100%',
+  },
+  averageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: '7%',
+  },
+  averageText: {
+
   },
   navIcon: {
     margin: '5%'
