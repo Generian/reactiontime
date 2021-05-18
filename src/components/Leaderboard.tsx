@@ -52,7 +52,7 @@ const Leaderboard = ({ navigation }: LeaderboardProps) => {
   const { colors } = useTheme()
 
   useEffect(() => {
-    setRefreshing(false)
+    setRefreshing(true)
     getHighscores()
       .then(h => {
         setHighscores(filterHighscores(sortHighscores(h), highscoreType))

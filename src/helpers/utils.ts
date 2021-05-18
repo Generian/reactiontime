@@ -52,7 +52,6 @@ export const filterHighscores = (highscores: Highscore[], highscoreType: Highsco
         return h.highscoreType === highscoreType
     }
   })
-  console.log(highscores)
   return highscores
 }
 
