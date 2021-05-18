@@ -1,4 +1,5 @@
-import { Highscore } from "./fetch";
+import { HighscoreType } from "../components/HighscoreTypeSwitcher"
+import { Highscore } from "./fetch"
 
 export const timeDifference = (previous: any, current: any = Date.now()) => {
 
@@ -38,6 +39,21 @@ export const timeDifference = (previous: any, current: any = Date.now()) => {
       const num = Math.round(elapsed/msPerYear)
       return num + ` year${num == 1 ? '' : 's'} ago`;   
   }
+}
+
+export const filterHighscores = (highscores: Highscore[], highscoreType: HighscoreType) => {
+
+  highscores = highscores.filter(h => {
+    switch (highscoreType) {
+      case "NORMAL":
+          return h.highscoreType == undefined || h.highscoreType === highscoreType
+    
+      default:
+        return h.highscoreType === highscoreType
+    }
+  })
+  console.log(highscores)
+  return highscores
 }
 
 export const sortHighscores = (highscores: Highscore[]) => {

@@ -4,8 +4,9 @@ import { Text, IconButton, useTheme, Title, Headline, Caption, Subheading, Activ
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { getHighscores, Highscore } from '../helpers/fetch'
-import { sortHighscores, timeDifference } from '../helpers/utils'
+import { filterHighscores, sortHighscores, timeDifference } from '../helpers/utils'
 import { LeaderboardProps } from '../helpers/Navigation'
+import HighcoreTypeSwitcher, { HighscoreType } from './HighscoreTypeSwitcher'
 
 interface HighscoreItemProps {
   item: {
@@ -46,16 +47,18 @@ const Leaderboard = ({ navigation }: LeaderboardProps) => {
 
   const [highscores, setHighscores] = useState<Highscore[]>([])
   const [refreshing, setRefreshing] = useState<boolean>(true)
+  const [highscoreType, setHighscoreType] = useState<HighscoreType>('THREE_AVG')
 
   const { colors } = useTheme()
 
   useEffect(() => {
+    setRefreshing(false)
     getHighscores()
       .then(h => {
-        setHighscores(sortHighscores(h))
+        setHighscores(filterHighscores(sortHighscores(h), highscoreType))
         setRefreshing(false)
       })
-  }, [])
+  }, [highscoreType])
 
   return (
     <View style={styles.leaderboardContainer}>
@@ -66,9 +69,16 @@ const Leaderboard = ({ navigation }: LeaderboardProps) => {
           style={styles.navIcon}
           onPress={() => navigation.pop()}
         />
+        <View style={styles.highscoreTypeSwitcher}>
+          <HighcoreTypeSwitcher 
+            highscoreType={highscoreType} 
+            setHighscoreType={setHighscoreType}
+          />
+        </View>
       </View>
       <View style={styles.titleContainer}>
         <Headline>Highscores</Headline>
+        <Caption>{highscoreType === "NORMAL" ? "Single score" : "Three times average"}</Caption>
       </View>
       <View style={styles.highscoresContainer}>
         <FlatList
@@ -92,9 +102,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   navContainer: {
-    alignItems: 'flex-start',
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '100%',
+  },
+  highscoreTypeSwitcher: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: '7%',
   },
   titleContainer: {
     width: '100%',

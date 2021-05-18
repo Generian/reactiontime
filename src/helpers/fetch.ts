@@ -1,3 +1,5 @@
+import { HighscoreType } from "../components/HighscoreTypeSwitcher"
+
 const BASE_URI = 'https://reactiontime-server.herokuapp.com'
 
 export interface Highscore {
@@ -5,6 +7,7 @@ export interface Highscore {
   id: string,
   name: string,
   time: number,
+  highscoreType?: HighscoreType,
 }
 
 export const getHighscores = async () => {
@@ -15,7 +18,6 @@ export const getHighscores = async () => {
       method: 'GET',
     })
     const response_data = await response.json()
-    console.log(response_data)
 
     highscores = response_data
 
@@ -26,14 +28,15 @@ export const getHighscores = async () => {
   }
 }
 
-export const doesQualify = async (time: number) => {
+export const doesQualify = async (time: number, highscoreType: HighscoreType) => {
   let res = {
     "qualifies": false,
     "rank": 0,
   }
   try {
     const body = JSON.stringify({
-      "time": String(time)
+      "time": String(time),
+      highscoreType
     })
     const raw = await fetch(`${BASE_URI}/api/highscores/qualify`, {
       headers: {
@@ -53,15 +56,12 @@ export const doesQualify = async (time: number) => {
   }
 }
 
-export const submitHighscore = async (time: number, name: string) => {
-  let res = {
-    "qualifies": false,
-    "rank": 0,
-  }
+export const submitHighscore = async (time: number, name: string, highscoreType: HighscoreType) => {
   try {
     const body = JSON.stringify({
       "time": String(time),
       "name": name,
+      "highscoreType": highscoreType,
     })
     const raw = await fetch(`${BASE_URI}/api/highscores`, {
       headers: {
@@ -71,7 +71,7 @@ export const submitHighscore = async (time: number, name: string) => {
       body: body,
     })
     const response = await raw.json()
-    
+    return response
   } catch (err) {
     console.error(err)
   }
