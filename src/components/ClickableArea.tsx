@@ -2,12 +2,13 @@ import * as React from 'react'
 import { Surface, Text, Avatar,useTheme } from 'react-native-paper'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faHandPointer } from '@fortawesome/free-regular-svg-icons'
+import { faStopCircle, faHandPointer } from '@fortawesome/free-regular-svg-icons'
 
 interface ClickableAreaProps {
   onPressIn: any,
   onPressOut: any,
   isPressed: boolean,
+  disabled: boolean
 }
 
 const ClickableArea = (props: ClickableAreaProps) => {
@@ -18,10 +19,12 @@ const ClickableArea = (props: ClickableAreaProps) => {
     <Surface style={styles.container}>
       <Pressable style={styles.pressable}
         onPressIn={props.onPressIn}
-        onPressOut={props.onPressOut}>
-          <View style={[styles.clickableArea,{ backgroundColor: props.isPressed ? colors.accent : '#fafafa', borderColor: props.isPressed ? colors.primary : '#eeeeee'}]}>
-            <Avatar.Icon icon={() => (<FontAwesomeIcon icon={faHandPointer} color={colors.gray} size={30}/>)}/>
-            <Text style={[styles.text,{ color: colors.text}]}>Touch and hold until lights turn green</Text>
+        onPressOut={props.onPressOut}
+        disabled={props.disabled}
+      >
+          <View style={[styles.clickableArea,{ backgroundColor: props.isPressed ? colors.accent : '#fafafa', borderColor: props.disabled ? colors.red : props.isPressed ? colors.primary : '#eeeeee'}]}>
+            <Avatar.Icon icon={() => (<FontAwesomeIcon icon={props.disabled ? faStopCircle : faHandPointer} color={colors.gray} size={30}/>)}/>
+            <Text style={[styles.text,{ color: colors.text}]}>{props.disabled ? 'Cool down after jump start. Wait 2 seconds' : 'Touch and hold until lights turn green'}</Text>
           </View>
       </Pressable>
     </Surface>

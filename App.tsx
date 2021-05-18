@@ -25,7 +25,7 @@ const theme = {
     green: '#00701a',
     lightGreen: '#c8e6c9',
     red: '#d32f2f',
-    lightRed: '#f5f5f5',
+    lightRed: '#ff6659',
     gray: '#e0e0e0',
     background: '#f5f5f5',
     text: '#1b1b1b',
